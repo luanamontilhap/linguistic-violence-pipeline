@@ -1,4 +1,4 @@
-def classificar_violencia(target_type, action_type, hallmark):
+def classificar_violencia(target_type, action_type, hallmark, repeticao=False):
 
     resultado = []
 
@@ -17,6 +17,10 @@ def classificar_violencia(target_type, action_type, hallmark):
     #Regra 4: TS
     if action_type == "INSULT" and target_type != "PROTECTED_GROUP":
         resultado.append("Toxic Speech")
+
+    #Regra 5: Repetição
+    if repeticao and target_type == "INDIVIDUAL_REFERENCE":
+        resultado.append("Cyberbullying")
 
     # Se nenhuma regra bater:
     if not resultado:
@@ -44,9 +48,15 @@ exemplos = [
      "target_type": "PROTECTED_GROUP",
      "action_type": "PRAISE",
      "hallmark": "NONE"},
+
+     {"texto": "@maria sua idiota, já falei isso mil vezes!!!!",
+     "target_type": "INDIVIDUAL_REFERENCE",
+     "action_type": "INSULT",
+     "hallmark": "SANCTION_SPEECH",
+     "repeticao": True},
 ]
 
 for ex in exemplos:
-    resultado = classificar_violencia(ex["target_type"], ex["action_type"], ex["hallmark"])
+    resultado = classificar_violencia(ex["target_type"], ex["action_type"], ex["hallmark"], ex.get("repeticao", False))
     print(f"Texto: {ex['texto']}")
     print(f"Classificação: {resultado}\n")
